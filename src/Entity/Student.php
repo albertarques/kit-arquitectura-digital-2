@@ -54,13 +54,13 @@ class Student
     private ?string $phone = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $tariff_id = null;
-
-    #[ORM\Column(nullable: true)]
     private ?bool $has_image_rights_accepted = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $has_sepa_agreement_accepted = null;
+
+    #[ORM\ManyToOne(inversedBy: 'students')]
+    private ?Tariff $tariff = null;
 
     public function getId(): ?int
     {
@@ -223,18 +223,6 @@ class Student
         return $this;
     }
 
-    public function getTariffId(): ?int
-    {
-        return $this->tariff_id;
-    }
-
-    public function setTariffId(?int $tariff_id): static
-    {
-        $this->tariff_id = $tariff_id;
-
-        return $this;
-    }
-
     public function isHasImageRightsAccepted(): ?bool
     {
         return $this->has_image_rights_accepted;
@@ -255,6 +243,18 @@ class Student
     public function setHasSepaAgreementAccepted(?bool $has_sepa_agreement_accepted): static
     {
         $this->has_sepa_agreement_accepted = $has_sepa_agreement_accepted;
+
+        return $this;
+    }
+
+    public function getTariff(): ?Tariff
+    {
+        return $this->tariff;
+    }
+
+    public function setTariff(?Tariff $tariff): static
+    {
+        $this->tariff = $tariff;
 
         return $this;
     }

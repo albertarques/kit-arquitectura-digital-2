@@ -3,16 +3,14 @@
 namespace App\Entity;
 
 use App\Repository\StudentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StudentRepository::class)]
-class Student
+class Student extends AbstractEntity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $name = null;
@@ -38,15 +36,6 @@ class Student
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $birth_date = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $city_id = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $parent_id = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $bank_id = null;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $dni = null;
 
@@ -54,13 +43,48 @@ class Student
     private ?string $phone = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $tariff_id = null;
-
-    #[ORM\Column(nullable: true)]
     private ?bool $has_image_rights_accepted = null;
 
     #[ORM\Column(nullable: true)]
     private ?bool $has_sepa_agreement_accepted = null;
+
+    #[ORM\ManyToOne(inversedBy: 'students')]
+    private ?Tariff $tariff = null;
+
+    #[ORM\ManyToOne(inversedBy: 'students')]
+    private ?Bank $bank = null;
+
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'event_student')]
+    private Collection $events;
+
+    #[ORM\ManyToOne(inversedBy: 'students')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?City $city = null;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: InvoiceLine::class)]
+    private Collection $invoiceLines;
+
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: ReceiptLine::class)]
+    private Collection $receiptLines;
+
+    #[ORM\ManyToOne(inversedBy: 'students')]
+    private ?Person $parent = null;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: Invoice::class)]
+    private Collection $invoices;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: Receipt::class)]
+    private Collection $receipts;
+
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
+        $this->invoiceLines = new ArrayCollection();
+        $this->receiptLines = new ArrayCollection();
+        $this->invoices = new ArrayCollection();
+        $this->receipts = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -163,42 +187,6 @@ class Student
         return $this;
     }
 
-    public function getCityId(): ?int
-    {
-        return $this->city_id;
-    }
-
-    public function setCityId(?int $city_id): static
-    {
-        $this->city_id = $city_id;
-
-        return $this;
-    }
-
-    public function getParentId(): ?int
-    {
-        return $this->parent_id;
-    }
-
-    public function setParentId(?int $parent_id): static
-    {
-        $this->parent_id = $parent_id;
-
-        return $this;
-    }
-
-    public function getBankId(): ?int
-    {
-        return $this->bank_id;
-    }
-
-    public function setBankId(?int $bank_id): static
-    {
-        $this->bank_id = $bank_id;
-
-        return $this;
-    }
-
     public function getDni(): ?string
     {
         return $this->dni;
@@ -223,18 +211,6 @@ class Student
         return $this;
     }
 
-    public function getTariffId(): ?int
-    {
-        return $this->tariff_id;
-    }
-
-    public function setTariffId(?int $tariff_id): static
-    {
-        $this->tariff_id = $tariff_id;
-
-        return $this;
-    }
-
     public function isHasImageRightsAccepted(): ?bool
     {
         return $this->has_image_rights_accepted;
@@ -255,6 +231,201 @@ class Student
     public function setHasSepaAgreementAccepted(?bool $has_sepa_agreement_accepted): static
     {
         $this->has_sepa_agreement_accepted = $has_sepa_agreement_accepted;
+
+        return $this;
+    }
+
+    public function getTariff(): ?Tariff
+    {
+        return $this->tariff;
+    }
+
+    public function setTariff(?Tariff $tariff): static
+    {
+        $this->tariff = $tariff;
+
+        return $this;
+    }
+
+    public function getBankId(): ?Bank
+    {
+        return $this->bank;
+    }
+
+    public function setBankId(?Bank $bank): static
+    {
+        $this->bank = $bank;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): static
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->addEventStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->events->removeElement($event)) {
+            $event->removeEventStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function getCityId(): ?City
+    {
+        return $this->city;
+    }
+
+    public function setCityId(?City $city): static
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InvoiceLine>
+     */
+    public function getInvoiceLines(): Collection
+    {
+        return $this->invoiceLines;
+    }
+
+    public function addInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if (!$this->invoiceLines->contains($invoiceLine)) {
+            $this->invoiceLines->add($invoiceLine);
+            $invoiceLine->setStudentId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if ($this->invoiceLines->removeElement($invoiceLine)) {
+            // set the owning side to null (unless already changed)
+            if ($invoiceLine->getStudentId() === $this) {
+                $invoiceLine->setStudentId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReceiptLine>
+     */
+    public function getReceiptLines(): Collection
+    {
+        return $this->receiptLines;
+    }
+
+    public function addReceiptLine(ReceiptLine $receiptLine): static
+    {
+        if (!$this->receiptLines->contains($receiptLine)) {
+            $this->receiptLines->add($receiptLine);
+            $receiptLine->setStudentId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceiptLine(ReceiptLine $receiptLine): static
+    {
+        if ($this->receiptLines->removeElement($receiptLine)) {
+            // set the owning side to null (unless already changed)
+            if ($receiptLine->getStudentId() === $this) {
+                $receiptLine->setStudentId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getParent(): ?Person
+    {
+        return $this->parent;
+    }
+
+    public function setParent(?Person $parent): static
+    {
+        $this->parent = $parent;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            // set the owning side to null (unless already changed)
+            if ($invoice->getStudent() === $this) {
+                $invoice->setStudent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Receipt>
+     */
+    public function getReceipts(): Collection
+    {
+        return $this->receipts;
+    }
+
+    public function addReceipt(Receipt $receipt): static
+    {
+        if (!$this->receipts->contains($receipt)) {
+            $this->receipts->add($receipt);
+            $receipt->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceipt(Receipt $receipt): static
+    {
+        if ($this->receipts->removeElement($receipt)) {
+            // set the owning side to null (unless already changed)
+            if ($receipt->getStudent() === $this) {
+                $receipt->setStudent(null);
+            }
+        }
 
         return $this;
     }

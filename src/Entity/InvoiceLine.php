@@ -6,12 +6,8 @@ use App\Repository\InvoiceLineRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: InvoiceLineRepository::class)]
-class InvoiceLine
+class InvoiceLine extends AbstractEntity
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $description = null;

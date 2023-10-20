@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\StudentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -39,13 +41,7 @@ class Student
     private ?\DateTimeInterface $birth_date = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $city_id = null;
-
-    #[ORM\Column(nullable: true)]
     private ?int $parent_id = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?int $bank_id = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $dni = null;
@@ -61,6 +57,21 @@ class Student
 
     #[ORM\ManyToOne(inversedBy: 'students')]
     private ?Tariff $tariff = null;
+
+    #[ORM\ManyToOne(inversedBy: 'students')]
+    private ?Bank $bank_id = null;
+
+    #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'event_student')]
+    private Collection $events;
+
+    #[ORM\ManyToOne(inversedBy: 'students')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?City $city_id = null;
+
+    public function __construct()
+    {
+        $this->events = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -163,18 +174,6 @@ class Student
         return $this;
     }
 
-    public function getCityId(): ?int
-    {
-        return $this->city_id;
-    }
-
-    public function setCityId(?int $city_id): static
-    {
-        $this->city_id = $city_id;
-
-        return $this;
-    }
-
     public function getParentId(): ?int
     {
         return $this->parent_id;
@@ -186,19 +185,6 @@ class Student
 
         return $this;
     }
-
-    public function getBankId(): ?int
-    {
-        return $this->bank_id;
-    }
-
-    public function setBankId(?int $bank_id): static
-    {
-        $this->bank_id = $bank_id;
-
-        return $this;
-    }
-
     public function getDni(): ?string
     {
         return $this->dni;
@@ -255,6 +241,57 @@ class Student
     public function setTariff(?Tariff $tariff): static
     {
         $this->tariff = $tariff;
+
+        return $this;
+    }
+
+    public function getBankId(): ?Bank
+    {
+        return $this->bank_id;
+    }
+
+    public function setBankId(?Bank $bank_id): static
+    {
+        $this->bank_id = $bank_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Event>
+     */
+    public function getEvents(): Collection
+    {
+        return $this->events;
+    }
+
+    public function addEvent(Event $event): static
+    {
+        if (!$this->events->contains($event)) {
+            $this->events->add($event);
+            $event->addEventStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvent(Event $event): static
+    {
+        if ($this->events->removeElement($event)) {
+            $event->removeEventStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function getCityId(): ?City
+    {
+        return $this->city_id;
+    }
+
+    public function setCityId(?City $city_id): static
+    {
+        $this->city_id = $city_id;
 
         return $this;
     }

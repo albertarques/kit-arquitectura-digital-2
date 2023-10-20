@@ -68,9 +68,17 @@ class Student
     #[ORM\JoinColumn(nullable: false)]
     private ?City $city_id = null;
 
+    #[ORM\OneToMany(mappedBy: 'student_id', targetEntity: InvoiceLine::class)]
+    private Collection $invoiceLines;
+
+    #[ORM\OneToMany(mappedBy: 'student_id', targetEntity: Receipt::class)]
+    private Collection $receipts;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
+        $this->invoiceLines = new ArrayCollection();
+        $this->receipts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -292,6 +300,66 @@ class Student
     public function setCityId(?City $city_id): static
     {
         $this->city_id = $city_id;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InvoiceLine>
+     */
+    public function getInvoiceLines(): Collection
+    {
+        return $this->invoiceLines;
+    }
+
+    public function addInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if (!$this->invoiceLines->contains($invoiceLine)) {
+            $this->invoiceLines->add($invoiceLine);
+            $invoiceLine->setStudentId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if ($this->invoiceLines->removeElement($invoiceLine)) {
+            // set the owning side to null (unless already changed)
+            if ($invoiceLine->getStudentId() === $this) {
+                $invoiceLine->setStudentId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Receipt>
+     */
+    public function getReceipts(): Collection
+    {
+        return $this->receipts;
+    }
+
+    public function addReceipt(Receipt $receipt): static
+    {
+        if (!$this->receipts->contains($receipt)) {
+            $this->receipts->add($receipt);
+            $receipt->setStudentId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceipt(Receipt $receipt): static
+    {
+        if ($this->receipts->removeElement($receipt)) {
+            // set the owning side to null (unless already changed)
+            if ($receipt->getStudentId() === $this) {
+                $receipt->setStudentId(null);
+            }
+        }
 
         return $this;
     }

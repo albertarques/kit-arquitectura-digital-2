@@ -29,9 +29,9 @@ class InvoiceLine
     private ?float $total = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoiceLines')]
-    private ?Student $student_id = null;
+    private ?Student $student = null;
 
-    #[ORM\ManyToOne(inversedBy: 'student_id')]
+    #[ORM\ManyToOne(inversedBy: 'student')]
     private ?Invoice $invoice = null;
 
     public function getId(): ?int
@@ -101,12 +101,12 @@ class InvoiceLine
 
     public function getStudentId(): ?Student
     {
-        return $this->student_id;
+        return $this->student;
     }
 
-    public function setStudentId(?Student $student_id): static
+    public function setStudentId(?Student $student): static
     {
-        $this->student_id = $student_id;
+        $this->student = $student;
 
         return $this;
     }

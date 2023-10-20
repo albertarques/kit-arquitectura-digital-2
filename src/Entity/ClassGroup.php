@@ -31,7 +31,7 @@ class ClassGroup
     #[ORM\Column(nullable: true)]
     private ?bool $is_for_private_lessons = null;
 
-    #[ORM\OneToMany(mappedBy: 'group_id', targetEntity: Event::class)]
+    #[ORM\OneToMany(mappedBy: 'group', targetEntity: Event::class)]
     private Collection $events;
 
     public function __construct()

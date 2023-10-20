@@ -35,7 +35,10 @@ class Event
     private Collection $event_student;
 
     #[ORM\ManyToOne(inversedBy: 'events')]
-    private ?ClassGroup $group_id = null;
+    private ?ClassGroup $group = null;
+
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    private ?Teacher $teacher = null;
 
     public function __construct()
     {
@@ -133,12 +136,24 @@ class Event
 
     public function getGroupId(): ?ClassGroup
     {
-        return $this->group_id;
+        return $this->group;
     }
 
-    public function setGroupId(?ClassGroup $group_id): static
+    public function setGroupId(?ClassGroup $group): static
     {
-        $this->group_id = $group_id;
+        $this->group = $group;
+
+        return $this;
+    }
+
+    public function getTeacherId(): ?Teacher
+    {
+        return $this->teacher;
+    }
+
+    public function setTeacherId(?Teacher $teacher): static
+    {
+        $this->teacher = $teacher;
 
         return $this;
     }

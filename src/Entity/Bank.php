@@ -24,12 +24,16 @@ class Bank
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $swift_code = null;
 
-    #[ORM\OneToMany(mappedBy: 'bank_id', targetEntity: Student::class)]
+    #[ORM\OneToMany(mappedBy: 'bank', targetEntity: Student::class)]
     private Collection $students;
+
+    #[ORM\OneToMany(mappedBy: 'bank', targetEntity: Person::class)]
+    private Collection $person;
 
     public function __construct()
     {
         $this->students = new ArrayCollection();
+        $this->person = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -97,6 +101,36 @@ class Bank
             // set the owning side to null (unless already changed)
             if ($student->getBankId() === $this) {
                 $student->setBankId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Person>
+     */
+    public function getPerson(): Collection
+    {
+        return $this->person;
+    }
+
+    public function addPerson(Person $person): static
+    {
+        if (!$this->person->contains($person)) {
+            $this->person->add($person);
+            $person->setBankId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePerson(Person $person): static
+    {
+        if ($this->person->removeElement($person)) {
+            // set the owning side to null (unless already changed)
+            if ($person->getBankId() === $this) {
+                $person->setBankId(null);
             }
         }
 

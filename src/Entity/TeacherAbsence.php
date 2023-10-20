@@ -15,7 +15,7 @@ class TeacherAbsence
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'teacherAbsences')]
-    private ?Teacher $teacher_id = null;
+    private ?Teacher $teacher = null;
 
     #[ORM\Column]
     private ?int $type = null;
@@ -30,12 +30,12 @@ class TeacherAbsence
 
     public function getTeacherId(): ?Teacher
     {
-        return $this->teacher_id;
+        return $this->teacher;
     }
 
-    public function setTeacherId(?Teacher $teacher_id): static
+    public function setTeacherId(?Teacher $teacher): static
     {
-        $this->teacher_id = $teacher_id;
+        $this->teacher = $teacher;
 
         return $this;
     }

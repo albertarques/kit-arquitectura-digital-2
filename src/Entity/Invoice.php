@@ -16,8 +16,6 @@ class Invoice
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoiceLine::class)]
-    private Collection $student_id;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date = null;
@@ -64,10 +62,14 @@ class Invoice
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $sepa_xmnl_generated_date = null;
 
-    public function __construct()
-    {
-        $this->student_id = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'invoices')]
+    private ?Receipt $receipt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'invoices')]
+    private ?Person $person = null;
+
+    #[ORM\ManyToOne(inversedBy: 'invoices')]
+    private ?Student $student = null;
 
     public function getId(): ?int
     {
@@ -77,33 +79,6 @@ class Invoice
     /**
      * @return Collection<int, InvoiceLine>
      */
-    public function getStudentId(): Collection
-    {
-        return $this->student_id;
-    }
-
-    public function addStudentId(InvoiceLine $studentId): static
-    {
-        if (!$this->student_id->contains($studentId)) {
-            $this->student_id->add($studentId);
-            $studentId->setInvoice($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStudentId(InvoiceLine $studentId): static
-    {
-        if ($this->student_id->removeElement($studentId)) {
-            // set the owning side to null (unless already changed)
-            if ($studentId->getInvoice() === $this) {
-                $studentId->setInvoice(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getDate(): ?\DateTimeInterface
     {
         return $this->date;
@@ -280,6 +255,42 @@ class Invoice
     public function setSepaXmnlGeneratedDate(?\DateTimeInterface $sepa_xmnl_generated_date): static
     {
         $this->sepa_xmnl_generated_date = $sepa_xmnl_generated_date;
+
+        return $this;
+    }
+
+    public function getReceiptId(): ?Receipt
+    {
+        return $this->receipt;
+    }
+
+    public function setReceiptId(?Receipt $receipt): static
+    {
+        $this->receipt = $receipt;
+
+        return $this;
+    }
+
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?Person $person): static
+    {
+        $this->person = $person;
+
+        return $this;
+    }
+
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
+
+    public function setStudent(?Student $student): static
+    {
+        $this->student = $student;
 
         return $this;
     }

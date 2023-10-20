@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ReceiptRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -13,9 +15,6 @@ class Receipt
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\ManyToOne(inversedBy: 'receipts')]
-    private ?Student $student_id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date = null;
@@ -53,22 +52,26 @@ class Receipt
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $sepa_xml_generated_date = null;
 
+    #[ORM\OneToMany(mappedBy: 'receipt', targetEntity: Invoice::class)]
+    private Collection $invoices;
+
+
+    #[ORM\ManyToOne(inversedBy: 'receipts')]
+    private ?Person $person = null;
+
+    #[ORM\ManyToOne(inversedBy: 'receipts')]
+    private ?Student $student = null;
+
+    public function __construct()
+    {
+        $this->invoices = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getStudentId(): ?Student
-    {
-        return $this->student_id;
-    }
-
-    public function setStudentId(?Student $student_id): static
-    {
-        $this->student_id = $student_id;
-
-        return $this;
-    }
 
     public function getDate(): ?\DateTimeInterface
     {
@@ -210,6 +213,61 @@ class Receipt
     public function setSepaXmlGeneratedDate(?\DateTimeInterface $sepa_xml_generated_date): static
     {
         $this->sepa_xml_generated_date = $sepa_xml_generated_date;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Invoice>
+     */
+    public function getInvoices(): Collection
+    {
+        return $this->invoices;
+    }
+
+    public function addInvoice(Invoice $invoice): static
+    {
+        if (!$this->invoices->contains($invoice)) {
+            $this->invoices->add($invoice);
+            $invoice->setReceiptId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoice(Invoice $invoice): static
+    {
+        if ($this->invoices->removeElement($invoice)) {
+            // set the owning side to null (unless already changed)
+            if ($invoice->getReceiptId() === $this) {
+                $invoice->setReceiptId(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+    public function getPerson(): ?Person
+    {
+        return $this->person;
+    }
+
+    public function setPerson(?Person $person): static
+    {
+        $this->person = $person;
+
+        return $this;
+    }
+
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
+
+    public function setStudent(?Student $student): static
+    {
+        $this->student = $student;
 
         return $this;
     }

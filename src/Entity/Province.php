@@ -24,7 +24,7 @@ class Province
     #[ORM\Column(length: 255)]
     private ?string $country = null;
 
-    #[ORM\OneToMany(mappedBy: 'province_id', targetEntity: City::class)]
+    #[ORM\OneToMany(mappedBy: 'province', targetEntity: City::class)]
     private Collection $cities;
 
     public function __construct()

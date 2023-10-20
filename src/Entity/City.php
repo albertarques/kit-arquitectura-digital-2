@@ -22,14 +22,18 @@ class City
     private ?string $postal_code = null;
 
     #[ORM\ManyToOne(inversedBy: 'cities')]
-    private ?Province $province_id = null;
+    private ?Province $province = null;
 
-    #[ORM\OneToMany(mappedBy: 'city_id', targetEntity: Student::class)]
+    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Student::class)]
     private Collection $students;
+
+    #[ORM\OneToMany(mappedBy: 'city', targetEntity: Person::class)]
+    private Collection $person;
 
     public function __construct()
     {
         $this->students = new ArrayCollection();
+        $this->person = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -63,12 +67,12 @@ class City
 
     public function getProvinceId(): ?Province
     {
-        return $this->province_id;
+        return $this->province;
     }
 
-    public function setProvinceId(?Province $province_id): static
+    public function setProvinceId(?Province $province): static
     {
-        $this->province_id = $province_id;
+        $this->province = $province;
 
         return $this;
     }
@@ -97,6 +101,36 @@ class City
             // set the owning side to null (unless already changed)
             if ($student->getCityId() === $this) {
                 $student->setCityId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Person>
+     */
+    public function getPerson(): Collection
+    {
+        return $this->person;
+    }
+
+    public function addPerson(Person $person): static
+    {
+        if (!$this->person->contains($person)) {
+            $this->person->add($person);
+            $person->setCityId($this);
+        }
+
+        return $this;
+    }
+
+    public function removePerson(Person $person): static
+    {
+        if ($this->person->removeElement($person)) {
+            // set the owning side to null (unless already changed)
+            if ($person->getCityId() === $this) {
+                $person->setCityId(null);
             }
         }
 

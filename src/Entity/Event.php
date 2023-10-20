@@ -34,6 +34,9 @@ class Event
     #[ORM\ManyToMany(targetEntity: Student::class, inversedBy: 'events')]
     private Collection $event_student;
 
+    #[ORM\ManyToOne(inversedBy: 'events')]
+    private ?ClassGroup $group_id = null;
+
     public function __construct()
     {
         $this->event_student = new ArrayCollection();
@@ -124,6 +127,18 @@ class Event
     public function removeEventStudent(Student $eventStudent): static
     {
         $this->event_student->removeElement($eventStudent);
+
+        return $this;
+    }
+
+    public function getGroupId(): ?ClassGroup
+    {
+        return $this->group_id;
+    }
+
+    public function setGroupId(?ClassGroup $group_id): static
+    {
+        $this->group_id = $group_id;
 
         return $this;
     }

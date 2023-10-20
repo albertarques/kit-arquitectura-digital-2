@@ -25,9 +25,8 @@ abstract class AbstractEntity
     #[ORM\Column(name: 'removed_at', nullable: true,  type: Types::DATETIME_MUTABLE)]
     protected ?\DateTimeInterface $removed_at = null;
 
-    #[Gedmo\Timestampable(on: 'create', )]
     #[ORM\Column(name: 'enabled', nullable: false,  type: Types::BOOLEAN)]
-    protected ?\DateTimeInterface $enabled = null;
+    protected ?bool $enabled = null;
 
     public function getId(): ?int
     {
@@ -70,12 +69,12 @@ abstract class AbstractEntity
         return $this;
     }
 
-    public function getEnabled(): ?\DateTimeInterface
+    public function getEnabled(): ?bool
     {
         return $this->enabled;
     }
 
-    public function setEnabled(?\DateTimeInterface $enabled): static
+    public function setEnabled(?bool $enabled): static
     {
         $this->enabled = $enabled;
 

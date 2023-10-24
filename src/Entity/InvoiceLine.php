@@ -16,7 +16,7 @@ class InvoiceLine extends AbstractEntity
     private ?float $units = null;
 
     #[ORM\Column]
-    private ?float $price_unit = null;
+    private ?float $priceUnit = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $discount = null;
@@ -25,10 +25,10 @@ class InvoiceLine extends AbstractEntity
     private ?float $total = null;
 
     #[ORM\ManyToOne(inversedBy: 'invoiceLines')]
-    private ?Student $student = null;
-
-    #[ORM\ManyToOne(inversedBy: 'student')]
     private ?Invoice $invoice = null;
+
+    #[ORM\ManyToOne(inversedBy: 'invoiceLines')]
+    private ?Student $student = null;
 
     public function getId(): ?int
     {
@@ -95,18 +95,6 @@ class InvoiceLine extends AbstractEntity
         return $this;
     }
 
-    public function getStudentId(): ?Student
-    {
-        return $this->student;
-    }
-
-    public function setStudentId(?Student $student): static
-    {
-        $this->student = $student;
-
-        return $this;
-    }
-
     public function getInvoice(): ?Invoice
     {
         return $this->invoice;
@@ -118,4 +106,17 @@ class InvoiceLine extends AbstractEntity
 
         return $this;
     }
+
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
+
+    public function setStudent(?Student $student): static
+    {
+        $this->student = $student;
+
+        return $this;
+    }
+
 }

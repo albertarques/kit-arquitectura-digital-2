@@ -67,6 +67,14 @@ class Invoice extends AbstractEntity
     #[ORM\ManyToOne(inversedBy: 'invoices')]
     private ?Student $student = null;
 
+    #[ORM\OneToMany(mappedBy: 'invoice', targetEntity: InvoiceLine::class)]
+    private Collection $invoiceLines;
+
+    public function __construct()
+    {
+        $this->invoiceLines = new ArrayCollection();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -287,6 +295,36 @@ class Invoice extends AbstractEntity
     public function setStudent(?Student $student): static
     {
         $this->student = $student;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InvoiceLine>
+     */
+    public function getInvoiceLines(): Collection
+    {
+        return $this->invoiceLines;
+    }
+
+    public function addInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if (!$this->invoiceLines->contains($invoiceLine)) {
+            $this->invoiceLines->add($invoiceLine);
+            $invoiceLine->setInvoice($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if ($this->invoiceLines->removeElement($invoiceLine)) {
+            // set the owning side to null (unless already changed)
+            if ($invoiceLine->getInvoice() === $this) {
+                $invoiceLine->setInvoice(null);
+            }
+        }
 
         return $this;
     }

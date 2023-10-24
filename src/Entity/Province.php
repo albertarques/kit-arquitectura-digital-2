@@ -81,7 +81,7 @@ class Province extends AbstractEntity
     {
         if (!$this->cities->contains($city)) {
             $this->cities->add($city);
-            $city->setProvinceId($this);
+            $city->setProvince($this);
         }
 
         return $this;
@@ -91,8 +91,8 @@ class Province extends AbstractEntity
     {
         if ($this->cities->removeElement($city)) {
             // set the owning side to null (unless already changed)
-            if ($city->getProvinceId() === $this) {
-                $city->setProvinceId(null);
+            if ($city->getProvince() === $this) {
+                $city->setProvince(null);
             }
         }
 

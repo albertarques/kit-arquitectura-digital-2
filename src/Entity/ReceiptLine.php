@@ -95,18 +95,6 @@ class ReceiptLine extends AbstractEntity
         return $this;
     }
 
-    // public function getStudentId(): ?Student
-    // {
-    //     return $this->student;
-    // }
-
-    // public function setStudentId(?Student $student): static
-    // {
-    //     $this->student = $student;
-
-    //     return $this;
-    // }
-
     public function getReceipt(): ?Receipt
     {
         return $this->receipt;

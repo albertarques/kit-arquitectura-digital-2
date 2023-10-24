@@ -130,24 +130,24 @@ class Event extends AbstractEntity
         return $this;
     }
 
-    public function getGroupId(): ?ClassGroup
+    public function getGroup(): ?ClassGroup
     {
         return $this->group;
     }
 
-    public function setGroupId(?ClassGroup $group): static
+    public function setGroup(?ClassGroup $group): static
     {
         $this->group = $group;
 
         return $this;
     }
 
-    public function getTeacherId(): ?Teacher
+    public function getTeache(): ?Teacher
     {
         return $this->teacher;
     }
 
-    public function setTeacherId(?Teacher $teacher): static
+    public function setTeacher(?Teacher $teacher): static
     {
         $this->teacher = $teacher;
 

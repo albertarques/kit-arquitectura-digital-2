@@ -24,12 +24,12 @@ class TeacherAbsence extends AbstractEntity
         return $this->id;
     }
 
-    public function getTeacherId(): ?Teacher
+    public function getTeacher(): ?Teacher
     {
         return $this->teacher;
     }
 
-    public function setTeacherId(?Teacher $teacher): static
+    public function setTeacher(?Teacher $teacher): static
     {
         $this->teacher = $teacher;
 

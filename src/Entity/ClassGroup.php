@@ -113,7 +113,7 @@ class ClassGroup extends AbstractEntity
     {
         if (!$this->events->contains($event)) {
             $this->events->add($event);
-            $event->setGroupId($this);
+            $event->setGroup($this);
         }
 
         return $this;
@@ -123,8 +123,8 @@ class ClassGroup extends AbstractEntity
     {
         if ($this->events->removeElement($event)) {
             // set the owning side to null (unless already changed)
-            if ($event->getGroupId() === $this) {
-                $event->setGroupId(null);
+            if ($event->getGroup() === $this) {
+                $event->setGroup(null);
             }
         }
 

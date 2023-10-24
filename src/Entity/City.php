@@ -61,12 +61,12 @@ class City extends AbstractEntity
         return $this;
     }
 
-    public function getProvinceId(): ?Province
+    public function getProvince(): ?Province
     {
         return $this->province;
     }
 
-    public function setProvinceId(?Province $province): static
+    public function setProvince(?Province $province): static
     {
         $this->province = $province;
 
@@ -85,7 +85,7 @@ class City extends AbstractEntity
     {
         if (!$this->students->contains($student)) {
             $this->students->add($student);
-            $student->setCityId($this);
+            $student->setCity($this);
         }
 
         return $this;
@@ -95,8 +95,8 @@ class City extends AbstractEntity
     {
         if ($this->students->removeElement($student)) {
             // set the owning side to null (unless already changed)
-            if ($student->getCityId() === $this) {
-                $student->setCityId(null);
+            if ($student->getCity() === $this) {
+                $student->setCity(null);
             }
         }
 
@@ -115,7 +115,7 @@ class City extends AbstractEntity
     {
         if (!$this->person->contains($person)) {
             $this->person->add($person);
-            $person->setCityId($this);
+            $person->setCity($this);
         }
 
         return $this;
@@ -125,8 +125,8 @@ class City extends AbstractEntity
     {
         if ($this->person->removeElement($person)) {
             // set the owning side to null (unless already changed)
-            if ($person->getCityId() === $this) {
-                $person->setCityId(null);
+            if ($person->getCity() === $this) {
+                $person->setCity(null);
             }
         }
 

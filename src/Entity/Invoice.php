@@ -263,12 +263,12 @@ class Invoice extends AbstractEntity
         return $this;
     }
 
-    public function getReceiptId(): ?Receipt
+    public function getReceipt(): ?Receipt
     {
         return $this->receipt;
     }
 
-    public function setReceiptId(?Receipt $receipt): static
+    public function setReceipt(?Receipt $receipt): static
     {
         $this->receipt = $receipt;
 

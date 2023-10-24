@@ -85,7 +85,7 @@ class Bank extends AbstractEntity
     {
         if (!$this->students->contains($student)) {
             $this->students->add($student);
-            $student->setBankId($this);
+            $student->setBank($this);
         }
 
         return $this;
@@ -95,8 +95,8 @@ class Bank extends AbstractEntity
     {
         if ($this->students->removeElement($student)) {
             // set the owning side to null (unless already changed)
-            if ($student->getBankId() === $this) {
-                $student->setBankId(null);
+            if ($student->getBank() === $this) {
+                $student->setBank(null);
             }
         }
 
@@ -115,7 +115,7 @@ class Bank extends AbstractEntity
     {
         if (!$this->person->contains($person)) {
             $this->person->add($person);
-            $person->setBankId($this);
+            $person->setBan($this);
         }
 
         return $this;
@@ -125,8 +125,8 @@ class Bank extends AbstractEntity
     {
         if ($this->person->removeElement($person)) {
             // set the owning side to null (unless already changed)
-            if ($person->getBankId() === $this) {
-                $person->setBankId(null);
+            if ($person->getBank() === $this) {
+                $person->setBank(null);
             }
         }
 

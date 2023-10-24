@@ -59,24 +59,24 @@ class Person extends AbstractEntity
         return $this->id;
     }
 
-    public function getCityId(): ?City
+    public function getCity(): ?City
     {
         return $this->city;
     }
 
-    public function setCityId(?City $city): static
+    public function setCity(?City $city): static
     {
         $this->city = $city;
 
         return $this;
     }
 
-    public function getBankId(): ?Bank
+    public function getBank(): ?Bank
     {
         return $this->bank;
     }
 
-    public function setBankId(?Bank $bank): static
+    public function setBank(?Bank $bank): static
     {
         $this->bank = $bank;
 

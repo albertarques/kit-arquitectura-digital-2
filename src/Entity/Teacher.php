@@ -146,7 +146,7 @@ class Teacher extends AbstractEntity
     {
         if (!$this->teacherAbsences->contains($teacherAbsence)) {
             $this->teacherAbsences->add($teacherAbsence);
-            $teacherAbsence->setTeacherId($this);
+            $teacherAbsence->setTeacher($this);
         }
 
         return $this;
@@ -156,8 +156,8 @@ class Teacher extends AbstractEntity
     {
         if ($this->teacherAbsences->removeElement($teacherAbsence)) {
             // set the owning side to null (unless already changed)
-            if ($teacherAbsence->getTeacherId() === $this) {
-                $teacherAbsence->setTeacherId(null);
+            if ($teacherAbsence->getTeacher() === $this) {
+                $teacherAbsence->setTeacher(null);
             }
         }
 
@@ -176,7 +176,7 @@ class Teacher extends AbstractEntity
     {
         if (!$this->events->contains($event)) {
             $this->events->add($event);
-            $event->setTeacherId($this);
+            $event->setTeacher($this);
         }
 
         return $this;
@@ -186,8 +186,8 @@ class Teacher extends AbstractEntity
     {
         if ($this->events->removeElement($event)) {
             // set the owning side to null (unless already changed)
-            if ($event->getTeacherId() === $this) {
-                $event->setTeacherId(null);
+            if ($event->getTeache() === $this) {
+                $event->setTeacher(null);
             }
         }
 

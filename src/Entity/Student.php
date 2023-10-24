@@ -51,7 +51,7 @@ class Student extends AbstractEntity
     #[ORM\ManyToOne(inversedBy: 'students')]
     private ?Tariff $tariff = null;
 
-    #[ORM\ManyToOne(inversedBy: 'students')]
+    #[ORM\ManyToOne(targetEntity: Bank::class, inversedBy: 'students')]
     private ?Bank $bank = null;
 
     #[ORM\ManyToMany(targetEntity: Event::class, mappedBy: 'event_student')]
@@ -60,13 +60,6 @@ class Student extends AbstractEntity
     #[ORM\ManyToOne(inversedBy: 'students')]
     #[ORM\JoinColumn(nullable: false)]
     private ?City $city = null;
-
-    #[ORM\OneToMany(mappedBy: 'student', targetEntity: InvoiceLine::class)]
-    private Collection $invoiceLines;
-
-
-    #[ORM\OneToMany(mappedBy: 'student', targetEntity: ReceiptLine::class)]
-    private Collection $receiptLines;
 
     #[ORM\ManyToOne(inversedBy: 'students')]
     private ?Person $parent = null;
@@ -77,13 +70,19 @@ class Student extends AbstractEntity
     #[ORM\OneToMany(mappedBy: 'student', targetEntity: Receipt::class)]
     private Collection $receipts;
 
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: ReceiptLine::class)]
+    private Collection $receiptLines;
+
+    #[ORM\OneToMany(mappedBy: 'student', targetEntity: InvoiceLine::class)]
+    private Collection $invoiceLines;
+
     public function __construct()
     {
         $this->events = new ArrayCollection();
-        $this->invoiceLines = new ArrayCollection();
-        $this->receiptLines = new ArrayCollection();
         $this->invoices = new ArrayCollection();
         $this->receipts = new ArrayCollection();
+        $this->receiptLines = new ArrayCollection();
+        $this->invoiceLines = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -247,12 +246,12 @@ class Student extends AbstractEntity
         return $this;
     }
 
-    public function getBankId(): ?Bank
+    public function getBank(): ?Bank
     {
         return $this->bank;
     }
 
-    public function setBankId(?Bank $bank): static
+    public function setBank(?Bank $bank): static
     {
         $this->bank = $bank;
 
@@ -286,74 +285,14 @@ class Student extends AbstractEntity
         return $this;
     }
 
-    public function getCityId(): ?City
+    public function getCity(): ?City
     {
         return $this->city;
     }
 
-    public function setCityId(?City $city): static
+    public function setCity(?City $city): static
     {
         $this->city = $city;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, InvoiceLine>
-     */
-    public function getInvoiceLines(): Collection
-    {
-        return $this->invoiceLines;
-    }
-
-    public function addInvoiceLine(InvoiceLine $invoiceLine): static
-    {
-        if (!$this->invoiceLines->contains($invoiceLine)) {
-            $this->invoiceLines->add($invoiceLine);
-            $invoiceLine->setStudentId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInvoiceLine(InvoiceLine $invoiceLine): static
-    {
-        if ($this->invoiceLines->removeElement($invoiceLine)) {
-            // set the owning side to null (unless already changed)
-            if ($invoiceLine->getStudentId() === $this) {
-                $invoiceLine->setStudentId(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ReceiptLine>
-     */
-    public function getReceiptLines(): Collection
-    {
-        return $this->receiptLines;
-    }
-
-    public function addReceiptLine(ReceiptLine $receiptLine): static
-    {
-        if (!$this->receiptLines->contains($receiptLine)) {
-            $this->receiptLines->add($receiptLine);
-            $receiptLine->setStudentId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeReceiptLine(ReceiptLine $receiptLine): static
-    {
-        if ($this->receiptLines->removeElement($receiptLine)) {
-            // set the owning side to null (unless already changed)
-            if ($receiptLine->getStudentId() === $this) {
-                $receiptLine->setStudentId(null);
-            }
-        }
 
         return $this;
     }
@@ -424,6 +363,66 @@ class Student extends AbstractEntity
             // set the owning side to null (unless already changed)
             if ($receipt->getStudent() === $this) {
                 $receipt->setStudent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ReceiptLine>
+     */
+    public function getReceiptLines(): Collection
+    {
+        return $this->receiptLines;
+    }
+
+    public function addReceiptLine(ReceiptLine $receiptLine): static
+    {
+        if (!$this->receiptLines->contains($receiptLine)) {
+            $this->receiptLines->add($receiptLine);
+            $receiptLine->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeReceiptLine(ReceiptLine $receiptLine): static
+    {
+        if ($this->receiptLines->removeElement($receiptLine)) {
+            // set the owning side to null (unless already changed)
+            if ($receiptLine->getStudent() === $this) {
+                $receiptLine->setStudent(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, InvoiceLine>
+     */
+    public function getInvoiceLines(): Collection
+    {
+        return $this->invoiceLines;
+    }
+
+    public function addInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if (!$this->invoiceLines->contains($invoiceLine)) {
+            $this->invoiceLines->add($invoiceLine);
+            $invoiceLine->setStudent($this);
+        }
+
+        return $this;
+    }
+
+    public function removeInvoiceLine(InvoiceLine $invoiceLine): static
+    {
+        if ($this->invoiceLines->removeElement($invoiceLine)) {
+            // set the owning side to null (unless already changed)
+            if ($invoiceLine->getStudent() === $this) {
+                $invoiceLine->setStudent(null);
             }
         }
 

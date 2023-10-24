@@ -51,16 +51,19 @@ class Receipt extends AbstractEntity
     #[ORM\OneToMany(mappedBy: 'receipt', targetEntity: Invoice::class)]
     private Collection $invoices;
 
-
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     private ?Person $person = null;
 
     #[ORM\ManyToOne(inversedBy: 'receipts')]
     private ?Student $student = null;
 
+    #[ORM\OneToMany(mappedBy: 'receipt', targetEntity: ReceiptLine::class)]
+    private Collection $receiptLines;
+
+
     public function __construct()
     {
-        $this->invoices = new ArrayCollection();
+        $this->receiptLines = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -214,29 +217,29 @@ class Receipt extends AbstractEntity
     }
 
     /**
-     * @return Collection<int, Invoice>
+     * @return Collection<int, ReceiptLine>
      */
-    public function getInvoices(): Collection
+    public function getReceiptLines(): Collection
     {
-        return $this->invoices;
+        return $this->receiptLines;
     }
 
-    public function addInvoice(Invoice $invoice): static
+    public function addReceiptLine(ReceiptLine $receiptLine): static
     {
-        if (!$this->invoices->contains($invoice)) {
-            $this->invoices->add($invoice);
-            $invoice->setReceiptId($this);
+        if (!$this->receiptLines->contains($receiptLine)) {
+            $this->receiptLines->add($receiptLine);
+            $receiptLine->setReceipt($this);
         }
 
         return $this;
     }
 
-    public function removeInvoice(Invoice $invoice): static
+    public function removeReceiptLine(ReceiptLine $receiptLine): static
     {
-        if ($this->invoices->removeElement($invoice)) {
+        if ($this->invoices->removeElement($receiptLine)) {
             // set the owning side to null (unless already changed)
-            if ($invoice->getReceiptId() === $this) {
-                $invoice->setReceiptId(null);
+            if ($receiptLine->getReceipt() === $this) {
+                $receiptLine->setReceipt(null);
             }
         }
 

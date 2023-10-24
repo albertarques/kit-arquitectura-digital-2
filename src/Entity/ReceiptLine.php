@@ -25,10 +25,10 @@ class ReceiptLine extends AbstractEntity
     private ?float $total = null;
 
     #[ORM\ManyToOne(inversedBy: 'receiptLines')]
-    private ?Student $student = null;
-
-    #[ORM\ManyToOne(inversedBy: 'student')]
     private ?Receipt $receipt = null;
+
+    #[ORM\ManyToOne(inversedBy: 'receiptLines')]
+    private ?Student $student = null;
 
     public function getId(): ?int
     {
@@ -95,17 +95,17 @@ class ReceiptLine extends AbstractEntity
         return $this;
     }
 
-    public function getStudentId(): ?Student
-    {
-        return $this->student;
-    }
+    // public function getStudentId(): ?Student
+    // {
+    //     return $this->student;
+    // }
 
-    public function setStudentId(?Student $student): static
-    {
-        $this->student = $student;
+    // public function setStudentId(?Student $student): static
+    // {
+    //     $this->student = $student;
 
-        return $this;
-    }
+    //     return $this;
+    // }
 
     public function getReceipt(): ?Receipt
     {
@@ -115,6 +115,18 @@ class ReceiptLine extends AbstractEntity
     public function setReceipt(?Receipt $receipt): static
     {
         $this->receipt = $receipt;
+
+        return $this;
+    }
+
+    public function getStudent(): ?Student
+    {
+        return $this->student;
+    }
+
+    public function setStudent(?Student $student): static
+    {
+        $this->student = $student;
 
         return $this;
     }

@@ -1,0 +1,65 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Student index{% endblock %}
+
+{% block body %}
+    <h1>Student index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th>Payment</th>
+                <th>Schedule</th>
+                <th>Comments</th>
+                <th>Surname</th>
+                <th>Birth_date</th>
+                <th>Dni</th>
+                <th>Phone</th>
+                <th>Has_image_rights_accepted</th>
+                <th>Has_sepa_agreement_accepted</th>
+                <th>Id</th>
+                <th>Created_at</th>
+                <th>Updated_at</th>
+                <th>Removed_at</th>
+                <th>Enabled</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for student in students %}
+            <tr>
+                <td>{{ student.name }}</td>
+                <td>{{ student.email }}</td>
+                <td>{{ student.address }}</td>
+                <td>{{ student.payment }}</td>
+                <td>{{ student.schedule }}</td>
+                <td>{{ student.comments }}</td>
+                <td>{{ student.surname }}</td>
+                <td>{{ student.birthDate ? student.birthDate|date('Y-m-d') : '' }}</td>
+                <td>{{ student.dni }}</td>
+                <td>{{ student.phone }}</td>
+                <td>{{ student.hasImageRightsAccepted ? 'Yes' : 'No' }}</td>
+                <td>{{ student.hasSepaAgreementAccepted ? 'Yes' : 'No' }}</td>
+                <td>{{ student.id }}</td>
+                <td>{{ student.createdAt ? student.createdAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ student.updatedAt ? student.updatedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ student.removedAt ? student.removedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>{{ student.enabled ? 'Yes' : 'No' }}</td>
+                <td>
+                    <a href="{{ path('app_student_show', {'id': student.id}) }}">show</a>
+                    <a href="{{ path('app_student_edit', {'id': student.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="18">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_student_new') }}">Create new</a>
+{% endblock %}
